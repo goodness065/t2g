@@ -28,11 +28,7 @@
 
 //     setImageFile(file);
 //     setError("");
-    
-//     try {
-//       const ai = new GoogleGenAI({
-//         apiKey: 'AIzaSyCanEPvdR9XIPZWxfhg2Ko2DOA5XVs6qS0'
-//       });
+
 
 //       // Upload the image file to Google GenAI
 //       const uploadedFile = await ai.files.upload({
@@ -83,7 +79,6 @@
 
 //     try {
 //       const ai = new GoogleGenAI({
-//         apiKey: 'AIzaSyCanEPvdR9XIPZWxfhg2Ko2DOA5XVs6qS0'
 //       });
 
 //       let contents;
