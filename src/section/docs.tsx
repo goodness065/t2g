@@ -16,7 +16,6 @@ import {
   Sparkles, 
   Brain, 
   MessageCircle,
-  Zap,
   CheckCircle,
   AlertCircle,
   Loader
