@@ -129,6 +129,7 @@ export const getStorageInfo = (): { used: number; available: number; percentage:
       percentage
     };
   } catch (error) {
+    console.error('Error getting storage info:', error);
     return { used: 0, available: 5, percentage: 0 };
   }
 }; 

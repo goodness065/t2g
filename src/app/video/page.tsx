@@ -1,31 +1,99 @@
 "use client";
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, VideoIcon } from 'lucide-react';
+import { ArrowLeft, Video, Sparkles, Film, Zap } from 'lucide-react';
 import VideoGenerator from '@/section/video-generation';
 
-export default function ImagePage() {
+export default function VideoPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-red-50/50 to-orange-100/60 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-red-400/20 to-orange-600/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-orange-400/20 to-red-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-pink-400/10 to-purple-600/10 rounded-full blur-3xl animate-pulse delay-500"></div>
+      </div>
+
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <Link href="/" className="flex items-center space-x-2 text-blue-600 hover:text-blue-700">
-                <ArrowLeft className="h-5 w-5" />
-                <span>Back to Dashboard</span>
+      <header className="relative bg-white/70 backdrop-blur-xl shadow-lg border-b border-white/30">
+        <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-6">
+              <Link href="/" className="group flex items-center space-x-3 text-gray-600 hover:text-red-600 transition-colors">
+                <div className="p-2 bg-gray-100 group-hover:bg-red-100 rounded-xl transition-colors">
+                  <ArrowLeft className="h-5 w-5" />
+                </div>
+                <span className="font-medium">Back</span>
               </Link>
-              <div className="h-6 w-px bg-gray-300 mx-4"></div>
-              <VideoIcon className="h-8 w-8 text-blue-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Video Generation</h1>
+              
+              <div className="h-8 w-px bg-gray-300"></div>
+              
+              <div className="flex items-center space-x-4">
+                <div className="relative p-3 bg-gradient-to-br from-red-600 via-orange-600 to-yellow-600 rounded-2xl shadow-lg">
+                  <Video className="h-8 w-8 text-white" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-600 via-orange-600 to-yellow-600 rounded-2xl blur opacity-50 -z-10"></div>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-extrabold bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent">
+                    Video Generation
+                  </h1>
+                  <p className="text-gray-600 text-sm font-medium">AI-powered cinematic video creation</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="hidden md:flex items-center space-x-2 bg-red-50 px-4 py-2 rounded-full border border-red-200">
+              <Film className="h-4 w-4 text-red-600" />
+              <span className="text-red-700 text-sm font-medium">Veo 3.0 Powered</span>
             </div>
           </div>
         </div>
       </header>
 
+      {/* Hero Section */}
+      <section className="relative py-16">
+        <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200/50 px-6 py-3 rounded-full mb-8">
+              <Sparkles className="h-5 w-5 text-red-600" />
+              <span className="text-sm font-semibold text-gray-700">Revolutionary AI Video Creation</span>
+              <Zap className="h-4 w-4 text-orange-600" />
+            </div>
+            
+            <h2 className="text-4xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
+              Bring Stories to
+              <span className="bg-gradient-to-r from-red-600 via-orange-600 to-yellow-600 bg-clip-text text-transparent block mt-2">
+                Cinematic Life
+              </span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto font-light leading-relaxed">
+              Generate <span className="font-semibold text-red-600">professional videos</span> from simple text descriptions using 
+              <span className="font-semibold text-orange-600"> Google&apos;s Veo 3.0</span> - the most advanced AI video generator
+            </p>
+            
+            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8">
+              <div className="flex items-center space-x-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-white/50">
+                <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                <span className="text-gray-700 font-medium">HD Quality</span>
+              </div>
+              <div className="flex items-center space-x-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-white/50">
+                <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                <span className="text-gray-700 font-medium">Cinematic Shots</span>
+              </div>
+              <div className="flex items-center space-x-3 bg-white/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-md border border-white/50">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
+                <span className="text-gray-700 font-medium">Any Scene</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Content */}
-      <VideoGenerator />
+      <main className="relative">
+        <VideoGenerator />
+      </main>
     </div>
   );
 }

@@ -6,9 +6,22 @@ import {
   createPartFromUri,
 } from "@google/genai";
 import { useState } from "react";
+import { 
+  Upload, 
+  FileText, 
+  Image as ImageIcon, 
+  Send, 
+  X, 
+  Download, 
+  Sparkles, 
+  Brain, 
+  MessageCircle,
+  Zap,
+  CheckCircle,
+  AlertCircle,
+  Loader
+} from 'lucide-react';
 
-
-type Mode = 'chat' | 'image' | 'video' | 'audio';
 type UploadedFile = {
   type: 'image';
   uri: string;
@@ -27,20 +40,13 @@ export default function Docs() {
   const [error, setError] = useState<string>("");
   const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
-  const [mode] = useState<Mode>('chat');
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [generatedVideo, setGeneratedVideo] = useState<{uri: string, blob?: Blob} | null>(null);
   const [generatedAudio, setGeneratedAudio] = useState<{data: string, url?: string} | null>(null);
-  const [videoProgress, setVideoProgress] = useState<string>("");
 
   const ai = new GoogleGenAI({
     apiKey: 'AIzaSyCanEPvdR9XIPZWxfhg2Ko2DOA5XVs6qS0'
   });
-
-  // Available voices for TTS
-  // const voices = [
-  //   'Kore', 'Charon', 'Fenrir', 'Aoede', 'Puck'
-  // ];
 
   // Convert file to base64
   function fileToBase64(file: File): Promise<string> {
@@ -55,8 +61,6 @@ export default function Docs() {
       reader.onerror = error => reject(error);
     });
   }
-
-
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -118,47 +122,6 @@ export default function Docs() {
     URL.revokeObjectURL(url);
   }
 
-//   async function downloadVideoFile(videoUri: string, filename: string) {
-//     try {
-//       setVideoProgress("Preparing download...");
-      
-//       const fileId = videoUri.split('/files/')[1]?.split(':')[0];
-      
-//       if (!fileId) {
-//         throw new Error("Invalid video URI format");
-//       }
-
-//       const downloadUrl = `https://generativelanguage.googleapis.com/v1beta/files/${fileId}?alt=media`;
-      
-//       const response = await fetch(downloadUrl, {
-//         headers: {
-//           'X-Goog-Api-Key': ai.apiKey || '',
-//         },
-//       });
-
-//       if (!response.ok) {
-//         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-//       }
-
-//       const blob = await response.blob();
-      
-//       const url = URL.createObjectURL(blob);
-//       const link = document.createElement('a');
-//       link.href = url;
-//       link.download = filename;
-//       document.body.appendChild(link);
-//       link.click();
-//       document.body.removeChild(link);
-//       URL.revokeObjectURL(url);
-      
-//       setVideoProgress("");
-//     } catch (err) {
-//       console.error('Download error:', err);
-//       setError(`Video download failed: ${err instanceof Error ? err.message : "Unknown error"}`);
-//       setVideoProgress("");
-//     }
-//   }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     
@@ -173,51 +136,47 @@ export default function Docs() {
     setGeneratedImages([]);
     setGeneratedVideo(null);
     setGeneratedAudio(null);
-    setVideoProgress("");
 
     try {
-     
-        // Chat mode - handle both text, images, and PDFs
-        let contents;
-        
-        if (uploadedFile) {
-          if (uploadedFile.type === 'image') {
-            contents = [
-              createUserContent([
-                question,
-                createPartFromUri(uploadedFile.uri, uploadedFile.mimeType),
-              ]),
-            ];
-          } else if (uploadedFile.type === 'pdf') {
-            contents = [
-              { text: question },
-              {
-                inlineData: {
-                  mimeType: uploadedFile.mimeType,
-                  data: uploadedFile.data
-                }
-              }
-            ];
-          }
-        } else {
-          contents = question;
-        }
-
-        const result = await ai.models.generateContent({
-          model: "gemini-2.5-flash",
-          // @ts-expect-error - contents is not typed
-          contents: contents ,
-        });
-
-        setResponse(result.text || "No response received");
+      // Chat mode - handle both text, images, and PDFs
+      let contents;
       
+      if (uploadedFile) {
+        if (uploadedFile.type === 'image') {
+          contents = [
+            createUserContent([
+              question,
+              createPartFromUri(uploadedFile.uri, uploadedFile.mimeType),
+            ]),
+          ];
+        } else if (uploadedFile.type === 'pdf') {
+          contents = [
+            { text: question },
+            {
+              inlineData: {
+                mimeType: uploadedFile.mimeType,
+                data: uploadedFile.data
+              }
+            }
+          ];
+        }
+      } else {
+        contents = question;
+      }
+
+      const result = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        // @ts-expect-error - contents is not typed
+        contents: contents ,
+      });
+
+      setResponse(result.text || "No response received");
 
     } catch (err) {
       console.error('Generation error:', err);
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
-      setVideoProgress("");
     }
   }
 
@@ -230,216 +189,318 @@ export default function Docs() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">AI Assistant</h1>
-      
+    <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className=" space-y-8">
+        {/* Left Column - Input */}
+        <div className=" space-y-8">
+          {/* File Upload Section */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="p-3 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
+                <Upload className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Upload & Analyze</h3>
+                <p className="text-gray-600">Upload documents or images for AI analysis</p>
+              </div>
+            </div>
 
+            <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 hover:border-blue-400 transition-colors duration-300">
+              <div className="text-center">
+                <div className="mb-4">
+                  <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl inline-block">
+                    <FileText className="h-12 w-12 text-blue-600" />
+                  </div>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">Choose a file to analyze</h4>
+                <p className="text-gray-600 mb-6">
+                  Upload images (JPG, PNG) or PDF documents for AI-powered analysis
+                </p>
+                
+                <div className="flex items-center justify-center">
+                  <label className="group relative inline-flex items-center space-x-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-2xl font-semibold cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                    <Upload className="h-5 w-5" />
+                    <span>Choose File</span>
+                    <input
+                      id="file-input"
+                      type="file"
+                      accept="image/*,application/pdf"
+                      onChange={handleFileUpload}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-50 -z-10 group-hover:opacity-70 transition-opacity"></div>
+                  </label>
+                </div>
+              </div>
+            </div>
 
-      {/* File Upload Section - only show in chat mode */}
-      {mode === 'chat' && (
-        <div className="mb-6 p-4 border border-gray-200 rounded-lg">
-          <h2 className="text-lg font-semibold mb-3">Upload File (Optional)</h2>
-          <p className="text-sm text-gray-600 mb-3">
-            Upload an image (JPG, PNG, etc.) or PDF document to analyze and ask questions about.
-          </p>
-          <div className="flex items-center gap-4">
-            <input
-              id="file-input"
-              type="file"
-              accept="image/*,application/pdf"
-              onChange={handleFileUpload}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-            {uploadedFile && (
-              <button
-                onClick={clearFile}
-                className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200"
-              >
-                Clear
-              </button>
-            )}
-          </div>
-          
-          {previewFile && (
-            <div className="mt-4">
-              <p className="text-sm text-gray-600 mb-2">Preview:</p>
-              {previewFile.type.startsWith('image/') ? (
-                <img
-                  src={URL.createObjectURL(previewFile)}
-                  alt="Preview"
-                  className="max-w-xs max-h-48 object-contain border rounded"
-                />
-              ) : (
-                <div className="p-4 border rounded bg-gray-50">
-                  <div className="flex items-center gap-2">
-                    <div className="text-2xl">📄</div>
+            {/* File Preview */}
+            {previewFile && (
+              <div className="mt-6 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border border-gray-200">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-lg font-semibold text-gray-900">File Preview</h4>
+                  <button
+                    onClick={clearFile}
+                    className="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                
+                {previewFile.type.startsWith('image/') ? (
+                  <div className="relative">
+                    <img
+                      src={URL.createObjectURL(previewFile)}
+                      alt="Preview"
+                      className="max-w-full max-h-64 object-contain rounded-xl shadow-lg border border-gray-200"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-4 p-4 bg-white rounded-xl border border-gray-200">
+                    <div className="p-3 bg-red-100 rounded-xl">
+                      <FileText className="h-8 w-8 text-red-600" />
+                    </div>
                     <div>
-                      <p className="font-medium">{previewFile.name}</p>
-                      <p className="text-sm text-gray-500">
-                        PDF Document ({(previewFile.size / 1024 / 1024).toFixed(2)} MB)
+                      <p className="font-semibold text-gray-900">{previewFile.name}</p>
+                      <p className="text-gray-600 text-sm">
+                        PDF Document • {(previewFile.size / 1024 / 1024).toFixed(2)} MB
                       </p>
                     </div>
                   </div>
+                )}
+                
+                {uploadedFile && (
+                  <div className="mt-4 flex items-center space-x-2 text-green-600">
+                    <CheckCircle className="h-5 w-5" />
+                    <span className="font-medium">
+                      {uploadedFile.type === 'pdf' ? 'PDF' : 'Image'} uploaded successfully
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* PDF Processing Info */}
+            {uploadedFile?.type === 'pdf' && (
+              <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="p-2 bg-blue-100 rounded-xl">
+                    <FileText className="h-6 w-6 text-blue-600" />
+                  </div>
+                  <h4 className="text-lg font-bold text-blue-900">PDF Ready for Analysis</h4>
                 </div>
-              )}
-              {uploadedFile && (
-                <p className="text-sm text-green-600 mt-2">
-                  ✓ {uploadedFile.type === 'pdf' ? 'PDF' : 'Image'} uploaded successfully
+                <p className="text-blue-800 mb-4">
+                  Your PDF has been processed and is ready for AI analysis. Try asking:
                 </p>
-              )}
+                <div className="grid md:grid-cols-2 gap-2">
+                  {[
+                    "Summarize this document",
+                    "What are the key points?",
+                    "Extract main conclusions",
+                    "Translate to another language"
+                  ].map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setQuestion(suggestion)}
+                      className="text-left p-3 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-xl transition-colors text-sm font-medium"
+                    >
+                      &quot;{suggestion}&quot;
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+
+          {/* Question Form */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
+            <div className="flex items-center space-x-4 mb-6">
+              <div className="p-3 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl shadow-lg">
+                <MessageCircle className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Ask Your Question</h3>
+                <p className="text-gray-600">Get intelligent responses powered by AI</p>
+              </div>
+            </div>
+            
+            <form onSubmit={handleSubmit}>
+              <div className="relative mb-6">
+                <textarea
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  placeholder={
+                    uploadedFile?.type === 'pdf'
+                      ? "Ask anything about your PDF document..."
+                      : uploadedFile?.type === 'image'
+                      ? "What would you like to know about this image..." 
+                      : "Ask me anything or upload a file to analyze..."
+                  }
+                  className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-purple-100 focus:border-purple-500 resize-none transition-all duration-300 text-lg min-h-[120px]"
+                  disabled={loading}
+                />
+                <div className="absolute bottom-4 right-4 flex items-center space-x-2">
+                  {uploadedFile && (
+                    <div className="flex items-center space-x-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
+                      {uploadedFile.type === 'pdf' ? <FileText className="h-4 w-4" /> : <ImageIcon className="h-4 w-4" />}
+                      <span>{uploadedFile.type === 'pdf' ? 'PDF' : 'Image'} attached</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="text-sm text-gray-600">
+                  <span className={question.length > 950 ? 'text-red-600 font-medium' : ''}>
+                    {question.length} / 1000 characters
+                  </span>
+                </div>
+                
+                <button
+                  type="submit"
+                  disabled={loading || !question.trim()}
+                  className="group relative inline-flex items-center space-x-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-2xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {loading ? (
+                    <>
+                      <Loader className="h-6 w-6 animate-spin" />
+                      <span>Analyzing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-6 w-6" />
+                      <span>Ask AI</span>
+                      <Sparkles className="h-5 w-5 opacity-70" />
+                    </>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl blur opacity-50 -z-10 group-hover:opacity-70 transition-opacity"></div>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          
+        </div>
+
+        {/* Right Column - Results */}
+        <div className="space-y-8">
+          {/* Loading State */}
+          {loading && (
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8 text-center">
+              <div className="p-4 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl inline-block mb-6">
+                <Loader className="h-12 w-12 text-purple-600 animate-spin" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">AI is thinking...</h3>
+              <p className="text-gray-600">
+                {uploadedFile?.type === 'pdf' ? "Analyzing your document..." 
+                 : uploadedFile?.type === 'image' ? "Understanding your image..."
+                 : "Processing your question..."}
+              </p>
+            </div>
+          )}
+
+          {/* Error Display */}
+          {error && (
+            <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-3xl p-8">
+              <div className="flex items-center space-x-4 mb-4">
+                <div className="p-3 bg-red-100 rounded-2xl">
+                  <AlertCircle className="h-8 w-8 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-red-800">Error</h3>
+                  <p className="text-red-600 text-sm">Something went wrong</p>
+                </div>
+              </div>
+              <p className="text-red-700 leading-relaxed">{error}</p>
+            </div>
+          )}
+
+          {/* Response Display */}
+          {response && !loading && (
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="p-3 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl shadow-lg">
+                  <Brain className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">AI Response</h3>
+                  <p className="text-gray-600">Analysis complete</p>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
+                <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-medium">{response}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Generated Images */}
+          {generatedImages.length > 0 && (
+            <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
+              <div className="flex items-center space-x-4 mb-6">
+                <div className="p-3 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl shadow-lg">
+                  <ImageIcon className="h-8 w-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900">Generated Images</h3>
+                  <p className="text-gray-600">{generatedImages.length} image(s) created</p>
+                </div>
+              </div>
+              
+              <div className="grid gap-6">
+                {generatedImages.map((imageData, index) => (
+                  <div key={index} className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
+                    <img
+                      src={`data:image/png;base64,${imageData}`}
+                      alt={`Generated image ${index + 1}`}
+                      className="w-full max-h-96 object-contain rounded-xl shadow-lg mb-4"
+                    />
+                    <button
+                      onClick={() => downloadImage(imageData, `generated-image-${index + 1}.png`)}
+                      className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300"
+                    >
+                      <Download className="h-5 w-5" />
+                      <span>Download Image</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!response && !loading && !error && generatedImages.length === 0 && !generatedVideo && !generatedAudio && (
+            <div className="bg-white/60 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 text-center">
+              <div className="p-6 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl inline-block mb-6">
+                <Brain className="h-16 w-16 text-purple-600" />
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Assist</h3>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                Upload a document or image and ask questions, or simply start a conversation with our AI assistant.
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center space-x-2 text-purple-600">
+                  <FileText className="h-4 w-4" />
+                  <span>PDF Analysis</span>
+                </div>
+                <div className="flex items-center space-x-2 text-blue-600">
+                  <ImageIcon className="h-4 w-4" />
+                  <span>Image Understanding</span>
+                </div>
+                <div className="flex items-center space-x-2 text-green-600">
+                  <MessageCircle className="h-4 w-4" />
+                  <span>Smart Conversation</span>
+                </div>
+                <div className="flex items-center space-x-2 text-orange-600">
+                  <Sparkles className="h-4 w-4" />
+                  <span>Creative Analysis</span>
+                </div>
+              </div>
             </div>
           )}
         </div>
-      )}
-
-     
-
-      {/* PDF Processing Info */}
-      {mode === 'chat' && uploadedFile?.type === 'pdf' && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="text-lg font-semibold text-blue-800 mb-2">📄 PDF Processing</h3>
-          <p className="text-sm text-blue-700">
-            Your PDF has been uploaded and will be analyzed. You can ask questions like:
-          </p>
-          <ul className="text-xs text-blue-600 mt-1 ml-4 list-disc">
-            <li>&quot;Summarize this document&quot;</li>
-            <li>&quot;What are the key points?&quot;</li>
-            <li>&quot;Extract the main conclusions&quot;</li>
-            <li>&quot;Translate this document to Spanish&quot;</li>
-          </ul>
-        </div>
-      )}
-
-      {/* Question Form */}
-      <form onSubmit={handleSubmit} className="mb-6">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder={
-              mode === 'audio'
-                ? "Enter text to convert to speech..."
-                : mode === 'video'
-                ? "Describe the video scene you want to generate..."
-                : mode === 'image' 
-                ? "Describe the image you want to generate..." 
-                : uploadedFile?.type === 'pdf'
-                ? "Ask about the PDF document..."
-                : uploadedFile?.type === 'image'
-                ? "Ask about the image..." 
-                : "Ask me anything..."
-            }
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            disabled={loading || !question.trim()}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading 
-              ? (mode === 'audio' ? "Generating..." : mode === 'video' ? "Generating..." : mode === 'image' ? "Creating..." : "Analyzing...") 
-              : (mode === 'audio' ? "Generate Speech" : mode === 'video' ? "Generate Video" : mode === 'image' ? "Generate Image" : "Ask")
-            }
-          </button>
-        </div>
-        
-        {mode === 'audio' && (
-          <p className="text-sm text-purple-600 mt-1">🎵 Text-to-speech mode - enter text to convert to audio</p>
-        )}
-        {mode === 'video' && (
-          <p className="text-sm text-purple-600 mt-1">🎬 Video generation mode - describe your scene in detail</p>
-        )}
-        {mode === 'image' && (
-          <p className="text-sm text-purple-600 mt-1">🎨 Image generation mode - describe what you want to create</p>
-        )}
-        {uploadedFile && mode === 'chat' && (
-          <p className="text-sm text-blue-600 mt-1">
-            {uploadedFile.type === 'pdf' ? 'PDF document' : 'Image'} will be included in your question
-          </p>
-        )}
-      </form>
-
-      {/* Video Progress */}
-      {videoProgress && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-blue-800">{videoProgress}</p>
-          <div className="mt-2 w-full bg-blue-200 rounded-full h-2">
-            <div className="bg-blue-600 h-2 rounded-full animate-pulse" style={{width: '50%'}}></div>
-          </div>
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h2 className="text-red-800 font-semibold">Error:</h2>
-          <p className="text-red-700">{error}</p>
-        </div>
-      )}
-
-      {loading && (
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span className="ml-2 text-gray-600">
-            {mode === 'audio' ? "Converting text to speech..."
-             : mode === 'video' ? "Creating your video (this may take several minutes)..." 
-             : mode === 'image' ? "Creating your image..." 
-             : uploadedFile?.type === 'pdf' ? "Analyzing document..."
-             : "Analyzing..."}
-          </span>
-        </div>
-      )}
-
-  
-
-   
-
-      {/* Generated Images */}
-      {generatedImages.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold mb-3">Generated Images:</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {generatedImages.map((imageData, index) => (
-              <div key={index} className="border rounded-lg p-4">
-                <img
-                  src={`data:image/png;base64,${imageData}`}
-                  alt={`Generated image ${index + 1}`}
-                  className="w-full max-h-96 object-contain rounded"
-                />
-                <button
-                  onClick={() => downloadImage(imageData, `generated-image-${index + 1}.png`)}
-                  className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-                >
-                  Download Image
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {response && !loading && (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-          <h2 className="text-lg font-semibold mb-2 text-gray-800">Response:</h2>
-          <p className="text-gray-700 whitespace-pre-wrap">{response}</p>
-        </div>
-      )}
-
-      {!response && !loading && !error && generatedImages.length === 0 && !generatedVideo && !generatedAudio && (
-        <div className="text-center py-8 text-gray-500">
-          <p>
-            {mode === 'audio'
-              ? "Enter some text to convert to speech!"
-              : mode === 'video'
-              ? "Describe a video scene you'd like to generate!"
-              : mode === 'image' 
-              ? "Describe an image you'd like to generate!" 
-              : "Upload an image or PDF document and ask questions, or just ask a text question to get started!"
-            }
-          </p>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

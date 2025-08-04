@@ -9,9 +9,7 @@
 //   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
 //   const [response, setResponse] = useState<string>("");
 
-//   const ai = new GoogleGenAI({
-//     apiKey: 'AIzaSyBE8d2iMY1ZtV5Hs201Njy55K6xobgBd6E'
-//   });
+//  
 
 //   function downloadImage(imageData: string, filename: string) {
 //     const byteCharacters = atob(imageData);
