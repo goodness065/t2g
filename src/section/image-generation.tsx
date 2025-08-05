@@ -2,29 +2,16 @@
 "use client"
 import { GoogleGenAI } from "@google/genai";
 import { useState } from "react";
-import { 
-  ImageIcon, 
-  Download, 
-  Sparkles, 
-  Palette, 
-  Zap, 
-  Star, 
-  Info, 
-  Lightbulb, 
-  Settings,
-  Loader,
-  CheckCircle,
-  AlertTriangle
-} from 'lucide-react';
 
 export default function ImageGenerator() {
   const [prompt, setPrompt] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [response, setResponse] = useState<string>("");
 
   const ai = new GoogleGenAI({
-    apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY
+    apiKey: 'AIzaSyBE8d2iMY1ZtV5Hs201Njy55K6xobgBd6E'
   });
 
   function downloadImage(imageData: string, filename: string) {
@@ -67,6 +54,7 @@ export default function ImageGenerator() {
     setLoading(true);
     setError("");
     setGeneratedImages([]);
+    setResponse("");
 
     try {
       console.log("Generating image with prompt:", prompt);
@@ -93,6 +81,7 @@ export default function ImageGenerator() {
 
         if (images.length > 0) {
           setGeneratedImages(images);
+          setResponse(`Successfully generated ${images.length} image(s)!`);
         } else {
           setError("No image data received from the model");
         }
@@ -112,405 +101,179 @@ export default function ImageGenerator() {
     }
   }
 
-  // Sample prompts for inspiration organized by category
+  // Sample prompts for inspiration
   const samplePrompts = [
-    {
-      category: "Fantasy & Sci-Fi",
-      prompts: [
-        "A 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery",
-        "A cyberpunk street scene with neon lights and flying cars in the rain",
-        "A magical forest with glowing mushrooms and fairy lights at twilight",
-        "A dragon made of crystalline structures perched on a mountain peak"
-      ],
-      icon: "🐉",
-      color: "from-purple-500 to-pink-600"
-    },
-    {
-      category: "Nature & Landscapes", 
-      prompts: [
-        "A serene Japanese garden with cherry blossoms in full bloom during golden hour",
-        "An underwater city with coral buildings and schools of colorful fish",
-        "A mountain landscape with aurora borealis dancing in the starry night sky",
-        "A tropical waterfall surrounded by lush rainforest vegetation"
-      ],
-      icon: "🌸",
-      color: "from-green-500 to-emerald-600"
-    },
-    {
-      category: "Architecture & Design",
-      prompts: [
-        "A steampunk airship floating above Victorian London with brass gears and steam",
-        "A cozy coffee shop in space with Earth visible through large windows",
-        "Modern minimalist house built into a cliffside overlooking the ocean",
-        "Ancient temple ruins overgrown with vibrant jungle vegetation"
-      ],
-      icon: "🏛️",
-      color: "from-blue-500 to-indigo-600"
-    }
-  ];
-
-  const artStyleTips = [
-    { style: "Photorealistic", description: "Ultra-realistic, detailed photography style" },
-    { style: "Digital Art", description: "Modern digital illustration and concept art" },
-    { style: "Oil Painting", description: "Classic fine art with rich textures" },
-    { style: "Watercolor", description: "Soft, flowing artistic medium" },
-    { style: "3D Rendered", description: "Computer-generated three-dimensional imagery" },
-    { style: "Anime/Manga", description: "Japanese animation and comic book style" }
+    "A 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery",
+    "A serene Japanese garden with cherry blossoms in full bloom during golden hour",
+    "A cyberpunk street scene with neon lights and flying cars in the rain",
+    "A magical forest with glowing mushrooms and fairy lights at twilight",
+    "A steampunk airship floating above Victorian London with brass gears and steam",
+    "An underwater city with coral buildings and schools of colorful fish",
+    "A cozy coffee shop in space with Earth visible through large windows",
+    "A dragon made of crystalline structures perched on a mountain peak"
   ];
 
   return (
-    <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="space-y-8">
-        {/* Left Column - Input & Controls */}
-        <div className="space-y-8">
-          {/* Model Info Card */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl shadow-lg">
-                <Sparkles className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">Imagen 4.0 Generator</h3>
-                <p className="text-gray-600">Google&apos;s most advanced AI image generation model</p>
-              </div>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-4">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200">
-                <div className="flex items-center space-x-2 mb-2">
-                  <CheckCircle className="h-5 w-5 text-blue-600" />
-                  <span className="font-semibold text-blue-800">High Quality</span>
-                </div>
-                <p className="text-blue-700 text-sm">Superior image resolution and detail</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-cyan-50 to-cyan-100 rounded-2xl p-4 border border-cyan-200">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Zap className="h-5 w-5 text-cyan-600" />
-                  <span className="font-semibold text-cyan-800">Fast Generation</span>
-                </div>
-                <p className="text-cyan-700 text-sm">Quick processing and delivery</p>
-              </div>
-              
-              <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-2xl p-4 border border-indigo-200">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Palette className="h-5 w-5 text-indigo-600" />
-                  <span className="font-semibold text-indigo-800">Any Style</span>
-                </div>
-                <p className="text-indigo-700 text-sm">Photorealistic to abstract art</p>
-              </div>
-            </div>
-            
-            <div className="mt-6 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-2xl border border-yellow-200">
-              <div className="flex items-start space-x-3">
-                <Info className="h-5 w-5 text-yellow-600 mt-0.5" />
-                <div>
-                  <p className="text-yellow-800 font-medium text-sm">Regional Availability</p>
-                  <p className="text-yellow-700 text-sm">This feature may not be available in all regions due to Google&apos;s restrictions.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">🎨 AI Image Generator</h1>
+      
+      {/* Image Generation Info */}
+      <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <h3 className="text-lg font-semibold text-green-800 mb-2">🎨 Imagen 4.0 Generator</h3>
+        <p className="text-sm text-green-700">
+          Using Google&apos;s latest Imagen 4.0 model for high-quality image generation. 
+          Each request generates 2 images for you to choose from.
+        </p>
+        <p className="text-xs text-green-600 mt-1">
+          Note: This feature may not be available in all regions due to Google&apos;s restrictions.
+        </p>
+      </div>
 
-          {/* Sample Prompts */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl shadow-lg">
-                <Star className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">Creative Inspiration</h3>
-                <p className="text-gray-600">Click any prompt to try it out</p>
-              </div>
-            </div>
-            
-            <div className="space-y-6">
-              {samplePrompts.map((category, categoryIndex) => (
-                <div key={categoryIndex}>
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className={`p-2 bg-gradient-to-br ${category.color} rounded-xl`}>
-                      <span className="text-white text-lg">{category.icon}</span>
-                    </div>
-                    <h4 className="text-lg font-bold text-gray-800">{category.category}</h4>
-                    <div className="flex-1 h-px bg-gradient-to-r from-gray-200 to-transparent"></div>
-                  </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-3">
-                    {category.prompts.map((samplePrompt, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setPrompt(samplePrompt)}
-                        className="group text-left p-4 bg-gradient-to-br from-gray-50 to-gray-100 hover:from-blue-50 hover:to-cyan-50 border-2 border-gray-200 hover:border-blue-300 rounded-2xl transition-all duration-300 transform hover:-translate-y-1"
-                      >
-                        <p className="text-gray-800 text-sm leading-relaxed">
-                          &quot;{samplePrompt.length > 80 ? `${samplePrompt.substring(0, 80)}...` : samplePrompt}&quot;
-                        </p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* Image Generation Info */}
+      <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <h3 className="text-lg font-semibold text-yellow-800 mb-2">Image Generation Tips</h3>
+        <p className="text-sm text-yellow-700">
+          Be specific and descriptive in your prompts. Include details about style, lighting, composition, and mood for better results.
+        </p>
+        <p className="text-xs text-yellow-600 mt-1">
+          Example: &quot;A 3D rendered magical forest with glowing mushrooms, soft purple lighting, and ethereal mist&quot;
+        </p>
+      </div>
 
-          {/* Prompt Input */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl shadow-lg">
-                <ImageIcon className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">Describe Your Vision</h3>
-                <p className="text-gray-600">The more detailed, the better the result</p>
-              </div>
-            </div>
-            
-            <form onSubmit={handleSubmit}>
-              <div className="mb-6">
-                <textarea
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Describe the image you want to create... Be specific about style, colors, mood, lighting, and composition for the best results."
-                  className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl text-gray-900 focus:outline-none focus:ring-4 focus:ring-green-100 focus:border-green-500 resize-none transition-all duration-300 text-lg min-h-[120px]"
-                  disabled={loading}
-                />
-                <div className="mt-4 flex justify-between items-center">
-                  <div className="text-sm">
-                    <span className={`font-medium ${prompt.length > 180 ? 'text-red-600' : 'text-gray-600'}`}>
-                      {prompt.length} characters
-                    </span>
-                    <span className="text-gray-500 ml-2">(50-200 recommended)</span>
-                  </div>
-                </div>
-              </div>
-              
-              <button
-                type="submit"
-                disabled={loading || !prompt.trim()}
-                className="group relative w-full inline-flex items-center justify-center space-x-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-              >
-                {loading ? (
-                  <>
-                    <Loader className="h-6 w-6 animate-spin" />
-                    <span>Generating Magic...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-6 w-6" />
-                    <span>Generate Image</span>
-                    <Zap className="h-5 w-5 opacity-70" />
-                  </>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl blur opacity-50 -z-10 group-hover:opacity-70 transition-opacity"></div>
-              </button>
-            </form>
-          </div>
-
-          {/* Loading State */}
-          {loading && (
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8 text-center">
-              <div className="p-4 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl inline-block mb-6">
-                <Loader className="h-12 w-12 text-blue-600 animate-spin" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Creating Your Image</h3>
-              <p className="text-gray-600">
-                AI is painting your vision with Imagen 4.0...
-              </p>
-              <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full animate-pulse" style={{width: '70%'}}></div>
-              </div>
-            </div>
-          )}
-
-          {/* Error Display */}
-          {error && (
-            <div className="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-3xl p-8">
-              <div className="flex items-center space-x-4 mb-4">
-                <div className="p-3 bg-red-100 rounded-2xl">
-                  <AlertTriangle className="h-8 w-8 text-red-600" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-red-800">Generation Error</h3>
-                  <p className="text-red-600 text-sm">Something went wrong</p>
-                </div>
-              </div>
-              <p className="text-red-700 leading-relaxed">{error}</p>
-            </div>
-          )}
-
-          {/* Generated Images */}
-          {generatedImages.length > 0 && (
-            <div className="bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 p-8">
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="p-3 bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl shadow-lg">
-                  <ImageIcon className="h-8 w-8 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900">Your Creation</h3>
-                  <p className="text-gray-600">Generated with Imagen 4.0</p>
-                </div>
-              </div>
-              
-              <div className="space-y-6">
-                {generatedImages.map((imageData, index) => (
-                  <div key={index} className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
-                    <div className="mb-4">
-                      <img
-                        src={`data:image/png;base64,${imageData}`}
-                        alt={`Generated image ${index + 1}`}
-                        className="w-full max-h-96 object-contain rounded-xl shadow-lg"
-                      />
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <span className="font-semibold text-gray-700">Format:</span>
-                          <p className="text-gray-600">PNG Image</p>
-                        </div>
-                        <div>
-                          <span className="font-semibold text-gray-700">Model:</span>
-                          <p className="text-gray-600">Imagen 4.0</p>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <span className="font-semibold text-gray-700 text-sm">Prompt:</span>
-                        <p className="text-gray-600 text-sm italic bg-white p-3 rounded-lg mt-1">
-                          &quot;{prompt.length > 100 ? `${prompt.substring(0, 100)}...` : prompt}&quot;
-                        </p>
-                      </div>
-                      
-                      <button
-                        onClick={() => downloadImage(imageData, `generated-image-${index + 1}-${Date.now()}.png`)}
-                        className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-1"
-                      >
-                        <Download className="h-5 w-5" />
-                        <span>Download High Quality</span>
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-            {/* Empty State */}
-            {!generatedImages.length && !loading && !error && (
-            <div className="bg-white/60 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 p-8 text-center">
-              <div className="p-6 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-2xl inline-block mb-6">
-                <ImageIcon className="h-16 w-16 text-blue-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Ready to Create</h3>
-              <p className="text-gray-600 leading-relaxed text-lg">
-                Describe any image you can imagine and watch AI bring it to life with Imagen 4.0
-              </p>
-              <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center space-x-2 text-blue-600">
-                  <Sparkles className="h-4 w-4" />
-                  <span>Any Art Style</span>
-                </div>
-                <div className="flex items-center space-x-2 text-cyan-600">
-                  <Zap className="h-4 w-4" />
-                  <span>Fast Generation</span>
-                </div>
-                <div className="flex items-center space-x-2 text-indigo-600">
-                  <ImageIcon className="h-4 w-4" />
-                  <span>High Quality</span>
-                </div>
-                <div className="flex items-center space-x-2 text-purple-600">
-                  <Download className="h-4 w-4" />
-                  <span>Instant Download</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Art Style Guide */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 bg-gradient-to-br from-orange-600 to-red-600 rounded-2xl shadow-lg">
-                <Palette className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">Art Style Guide</h3>
-                <p className="text-gray-600">Popular styles to include in your prompts</p>
-              </div>
-            </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {artStyleTips.map((tip, index) => (
-                <div key={index} className="bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl p-4 border border-orange-200">
-                  <h5 className="font-bold text-orange-800 mb-2">{tip.style}</h5>
-                  <p className="text-orange-700 text-sm">{tip.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column - Results & Tips */}
-        <div className="space-y-8">
-          
-
-          {/* Tips Section */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl shadow-lg">
-                <Lightbulb className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">Pro Tips</h3>
-                <p className="text-gray-600 text-sm">For better results</p>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              {[
-                { icon: "🎨", tip: "Specify art style", detail: "photorealistic, oil painting, digital art" },
-                { icon: "💡", tip: "Include lighting", detail: "golden hour, neon lighting, soft ambient" },
-                { icon: "📐", tip: "Mention composition", detail: "close-up, wide angle, bird's eye view" },
-                { icon: "🌈", tip: "Add mood & colors", detail: "serene, dramatic, warm colors, vibrant" },
-                { icon: "🔍", tip: "Be specific", detail: "More details = better results" }
-              ].map((item, index) => (
-                <div key={index} className="flex items-start space-x-3 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl border border-yellow-200">
-                  <span className="text-xl">{item.icon}</span>
-                  <div>
-                    <p className="font-semibold text-yellow-800 text-sm">{item.tip}</p>
-                    <p className="text-yellow-700 text-xs">{item.detail}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Debug Section */}
-          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-8">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 bg-gradient-to-br from-gray-600 to-gray-700 rounded-2xl shadow-lg">
-                <Settings className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">Debug Tools</h3>
-                <p className="text-gray-600 text-sm">Check system status</p>
-              </div>
-            </div>
-            
+      {/* Sample Prompts */}
+      <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <h3 className="text-lg font-semibold text-blue-800 mb-2">💡 Sample Prompts</h3>
+        <p className="text-sm text-blue-700 mb-3">Try these creative examples or create your own:</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          {samplePrompts.map((samplePrompt, index) => (
             <button
-              onClick={listAvailableModels}
-              className="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300"
+              key={index}
+              onClick={() => setPrompt(samplePrompt)}
+              className="text-left text-sm p-3 bg-white border border-blue-200 rounded hover:bg-blue-100 transition-colors"
             >
-              <Settings className="h-5 w-5" />
-              <span>Check Available Models</span>
+              &quot;{samplePrompt.substring(0, 80)}{samplePrompt.length > 80 ? '...' : ''}&quot;
             </button>
-            
-            <div className="mt-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
-              <p className="text-gray-700 text-xs font-medium mb-1">Available Models:</p>
-              <p className="text-gray-600 text-xs">imagen-3.0, imagen-4.0-generate, imagen-4.0-ultra</p>
-            </div>
-          </div>
-
-        
+          ))}
         </div>
+      </div>
+
+      {/* Prompt Form */}
+      <form onSubmit={handleSubmit} className="mb-6">
+        <div className="mb-4">
+          <label htmlFor="prompt-input" className="block text-sm font-medium text-gray-700 mb-2">
+            Image Description
+          </label>
+          <textarea
+            id="prompt-input"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Describe the image you want to generate... Be specific about style, colors, mood, and composition for best results."
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
+            rows={4}
+            disabled={loading}
+          />
+          <div className="mt-1 text-sm text-gray-500">
+            Characters: {prompt.length} (recommended: 50-200 characters for optimal results)
+          </div>
+        </div>
+        
+        <button
+          type="submit"
+          disabled={loading || !prompt.trim()}
+          className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-medium"
+        >
+          {loading ? "Generating Images..." : "🎨 Generate Images (2x)"}
+        </button>
+        
+        <p className="text-sm text-purple-600 mt-2 text-center">
+          🎨 Using Imagen 4.0 - generates 2 high-quality images per request
+        </p>
+      </form>
+
+      {error && (
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <h2 className="text-red-800 font-semibold">Error:</h2>
+          <p className="text-red-700">{error}</p>
+        </div>
+      )}
+
+      {loading && (
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <span className="ml-2 text-gray-600">Creating your images with Imagen 4.0...</span>
+        </div>
+      )}
+
+      {/* AI Response Text */}
+      {response && !loading && (
+        <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <h2 className="text-lg font-semibold mb-2 text-gray-800">AI Response:</h2>
+          <p className="text-gray-700 whitespace-pre-wrap">{response}</p>
+        </div>
+      )}
+
+      {/* Generated Images */}
+      {generatedImages.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold mb-3">Generated Images:</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {generatedImages.map((imageData, index) => (
+              <div key={index} className="border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
+                <img
+                  src={`data:image/png;base64,${imageData}`}
+                  alt={`Generated image ${index + 1}`}
+                  className="w-full max-h-96 object-contain rounded mb-3"
+                />
+                <div className="flex justify-between items-center">
+                  <div className="text-sm text-gray-600">
+                    <div><strong>Format:</strong> PNG</div>
+                    <div><strong>Prompt:</strong> &quot;{prompt.substring(0, 50)}{prompt.length > 50 ? '...' : ''}&quot;</div>
+                  </div>
+                  <button
+                    onClick={() => downloadImage(imageData, `generated-image-${index + 1}-${Date.now()}.png`)}
+                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium whitespace-nowrap"
+                  >
+                    📥 Download
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!generatedImages.length && !loading && !error && (
+        <div className="text-center py-8 text-gray-500">
+          <div className="text-4xl mb-4">🎨</div>
+          <p className="text-lg">Describe an image you&apos;d like to generate!</p>
+          <p className="text-sm mt-2">Be creative and specific - include details about style, colors, lighting, and composition.</p>
+        </div>
+      )}
+      
+      {/* Tips */}
+      <div className="mt-8 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <h3 className="font-semibold text-gray-800 mb-2">💡 Tips for Better Image Generation:</h3>
+        <ul className="text-sm text-gray-600 space-y-1">
+          <li>• Be specific about art style: &quot;photorealistic&quot;, &quot;oil painting&quot;, &quot;digital art&quot;, &quot;3D rendered&quot;</li>
+          <li>• Include lighting details: &quot;golden hour&quot;, &quot;neon lighting&quot;, &quot;soft ambient light&quot;</li>
+          <li>• Specify composition: &quot;close-up&quot;, &quot;wide angle&quot;, &quot;bird&apos;s eye view&quot;, &quot;low angle&quot;</li>
+          <li>• Add mood and atmosphere: &quot;serene&quot;, &quot;dramatic&quot;, &quot;whimsical&quot;, &quot;mysterious&quot;</li>
+          <li>• Mention colors and materials: &quot;warm colors&quot;, &quot;metallic textures&quot;, &quot;vibrant pastels&quot;</li>
+        </ul>
+      </div>
+
+      {/* Debug Section */}
+      <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <h3 className="font-semibold text-yellow-800 mb-2">🔧 Debug: Check Available Models</h3>
+        <button
+          onClick={listAvailableModels}
+          className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-sm"
+        >
+          List Available Models (Check Console)
+        </button>
+        <p className="text-xs text-yellow-600 mt-2">
+          Available image models: imagen-3.0-generate-002, imagen-4.0-generate-preview-06-06, imagen-4.0-ultra-generate-preview-06-06
+        </p>
       </div>
     </div>
   );

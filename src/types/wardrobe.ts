@@ -65,8 +65,8 @@ export interface Outfit {
 }
 
 export interface StyleProfile {
-  bodyType?: BodyType;
-  colorProfile?: ColorProfile;
+  bodyType: BodyType;
+  colorProfile: ColorProfile;
   preferredStyles: StyleType[];
   sizeInfo: SizeInfo;
   preferences: StylePreferences;
@@ -106,6 +106,4 @@ export interface OutfitSuggestion {
   reasoning: string;
   missingItems?: string[];
   alternatives?: WardrobeItem[];
-  bodyTypeNotes?: string;
-  colorTheme?: string;
 } 

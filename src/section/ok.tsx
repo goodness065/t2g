@@ -310,7 +310,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
               <Palette className="h-8 w-8 text-blue-600" />
@@ -328,7 +328,7 @@ export default function Home() {
 
       {/* Navigation */}
       <nav className="bg-white border-b">
-        <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8">
             {tabs.map(tab => {
               const Icon = tab.icon;
@@ -352,7 +352,7 @@ export default function Home() {
       </nav>
 
       {/* Main Content */}
-      <main className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {renderTabContent()}
       </main>
 
