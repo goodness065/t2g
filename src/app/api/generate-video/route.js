@@ -5,7 +5,7 @@ export async function POST(request) {
     const { prompt } = await request.json();
     
     const ai = new GoogleGenAI({
-        apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY || '',
+        apiKey: 'AIzaSyCanEPvdR9XIPZWxfhg2Ko2DOA5XVs6qS0',
     });
 
     let operation = await ai.models.generateVideos({
