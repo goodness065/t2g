@@ -106,11 +106,32 @@ export async function POST(request: NextRequest) {
     }, null, 2));
 
     // Use service account credentials for deployment
+    let credentials;
+    if (process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON) {
+      try {
+        // Handle the JSON string that might have formatting issues
+        const credentialsString = process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON;
+        credentials = JSON.parse(credentialsString);
+      } catch (parseError) {
+        console.error("Error parsing GOOGLE_APPLICATION_CREDENTIALS_JSON:", parseError);
+        // Fall back to default credentials
+        credentials = undefined;
+      }
+    } else if (process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64) {
+      try {
+        // Handle base64 encoded credentials
+        const decodedString = Buffer.from(process.env.GOOGLE_APPLICATION_CREDENTIALS_BASE64, 'base64').toString('utf-8');
+        credentials = JSON.parse(decodedString);
+      } catch (parseError) {
+        console.error("Error parsing GOOGLE_APPLICATION_CREDENTIALS_BASE64:", parseError);
+        // Fall back to default credentials
+        credentials = undefined;
+      }
+    }
+
     const auth = new GoogleAuth({
       scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-      credentials: process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON 
-        ? JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON)
-        : undefined,
+      credentials: credentials,
     });
 
     const client = await auth.getClient();

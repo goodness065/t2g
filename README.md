@@ -38,6 +38,11 @@ For the fraud detection feature to work in production, you need to set up Google
    GOOGLE_APPLICATION_CREDENTIALS_JSON={"type":"service_account","project_id":"your-project-id",...}
    ```
    - Copy the entire contents of the downloaded JSON file as the value
+   - **Important**: Make sure the JSON is on a single line with no line breaks
+   - **Alternative**: You can also base64 encode the JSON file and set it as:
+   ```
+   GOOGLE_APPLICATION_CREDENTIALS_BASE64=base64_encoded_json_content
+   ```
 
 4. **Alternative: Use Google Cloud Default Credentials**:
    - If deploying on Google Cloud Platform (Cloud Run, App Engine, etc.), you can use default credentials
