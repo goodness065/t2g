@@ -209,10 +209,21 @@ export default function WardrobePage() {
                 </div>
                 <button
                   onClick={() => setUploadMode('wardrobe')}
+                  disabled={isLoading}
                   className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 >
                   <Camera className="h-5 w-5" />
-                  <span>Add Item</span>
+                  {
+                    isLoading ?  
+                        <span>
+                          Adding...
+                        </span>
+
+                    : (
+                      <span>Add Item</span>
+                    )
+                  }
+                 
                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur opacity-50 -z-10 group-hover:opacity-70 transition-opacity"></div>
                 </button>
               </div>
@@ -298,9 +309,19 @@ export default function WardrobePage() {
                       </div>
                       <button
                         onClick={() => setUploadMode('bodytype')}
+                        disabled={isLoading || isGeneratingBodyType}
                         className="text-purple-600 hover:text-purple-700 font-medium text-sm hover:underline transition-colors"
                       >
-                        Re-analyze body type
+                        {
+                          isLoading || isGeneratingBodyType ? 
+                            <span>
+                              Analyzing...
+                            </span>
+                          :
+                            <span>
+                              Re-analyze body type
+                            </span>
+                        }
                       </button>
                     </div>
                   ) : (
@@ -308,10 +329,18 @@ export default function WardrobePage() {
                       <p className="text-gray-600">Upload a full-body photo to discover your body type and get personalized style recommendations.</p>
                       <button
                         onClick={() => setUploadMode('bodytype')}
+                        disabled={isLoading || isGeneratingBodyType}
                         className="group relative inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                       >
                         <Camera className="h-5 w-5" />
-                        <span>Analyze Body Type</span>
+                        {
+                          isLoading || isGeneratingBodyType ? 
+                            <span>
+                              Analyzing...
+                            </span>
+                          :
+                            <span>Analyze Body Type</span>
+                        }
                       </button>
                     </div>
                   )}
