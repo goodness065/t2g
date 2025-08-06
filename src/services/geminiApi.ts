@@ -134,7 +134,7 @@ class GeminiService {
   ): Promise<OutfitSuggestion[]> {
     try {
       const prompt = `
-        Create 3 outfit combinations from these wardrobe items for ${occasion}${weather ? ` in ${weather} weather` : ''}.
+        Create 3 outfit perfect combinations from these wardrobe items for ${occasion}${weather ? ` in ${weather} weather` : ''}.
         Wardrobe items: ${JSON.stringify(
           wardrobeItems.map((item) => ({
             id: item.id,
@@ -143,9 +143,16 @@ class GeminiService {
             colors: item.colors,
             style: item.style,
             occasion: item.occasion,
+            subcategory: item.subcategory,
+            fit: item.fit,
+            material: item.material,
+            dominantColor: item.dominantColor,
+            tags: item.tags,
+            season: item.season,
           }))
         )}
-        ${styleProfile ? `Style profile: ${JSON.stringify(styleProfile)}` : ''}
+        ${styleProfile ? `Style profile: ${JSON.stringify(styleProfile)}` : ''}.
+
         Respond in JSON format:
         {
           "outfits": [
@@ -154,10 +161,10 @@ class GeminiService {
               "confidence": 0.8,
               "reasoning": "why this combination works",
               "missingItems": ["items that would improve the outfit"]
-            }
+            } 
           ]
         }
-        Ensure color coordination and appropriate style matching.
+        Ensure color coordination and appropriate style matching. Be conscious of the weather and the occasion. also be conscious of the category and subcategory of the items so you can create a perfect combination. For example do not combine a category bottoms and a category dresses. it can not work because trouser and dresses can not be combined.
       `;
 
       const result = await this.model.generateContent(prompt);
