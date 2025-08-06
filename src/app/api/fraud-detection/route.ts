@@ -28,6 +28,13 @@ interface FraudInstance {
   [key: string]: number;
 }
 
+interface FormData {
+  amount: number;
+  international: number;
+  online: number;
+  timeofday: number;
+  device: number;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -84,7 +91,7 @@ export async function POST(request: NextRequest) {
         timeInMinutes = Math.floor(Math.random() * 172800); // fallback to random
     }
 
-    // Format Time and Amount as strings like in the dataset
+    // Format Time and Amount as numbers
     structuredInstance["Time"] = timeInMinutes;
     structuredInstance["Amount"] = amount;
 
@@ -98,8 +105,12 @@ export async function POST(request: NextRequest) {
       instances: [structuredInstance]
     }, null, 2));
 
+    // Use service account credentials for deployment
     const auth = new GoogleAuth({
       scopes: ["https://www.googleapis.com/auth/cloud-platform"],
+      credentials: process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON 
+        ? JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON)
+        : undefined,
     });
 
     const client = await auth.getClient();
