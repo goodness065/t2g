@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @next/next/no-img-element */
 import React, { useState } from 'react';
@@ -249,7 +250,15 @@ const DetailsModal: React.FC<{ item: WardrobeItem; onClose: () => void }> = ({ i
                   </div>
                   <div>
                     <span className="font-semibold text-gray-700">Fit:</span>
-                    <p className="capitalize">{item?.fit}</p>
+                    <p className="capitalize">
+                      {item?.fit 
+                        ? typeof item.fit === 'string' 
+                          ? item.fit 
+                          // @ts-ignore
+                          : item?.fit?.top && item?.fit?.bottoms ? `Top: ${item?.fit?.top}, Bottoms: ${item?.fit?.bottoms}` : 'N/A'
+                        : 'N/A'
+                      }
+                    </p>
                   </div>
                   {item.brand && (
                     <div className="col-span-2">
