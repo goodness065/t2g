@@ -149,7 +149,6 @@ class GeminiService {
             dominantColor: item.dominantColor,
             tags: item.tags,
             season: item.season,
-            timesWorn: item.timesWorn,
           }))
         )}
         ${styleProfile ? `Style profile: ${JSON.stringify(styleProfile)}` : ''}.
