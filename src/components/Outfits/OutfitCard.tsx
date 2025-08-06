@@ -9,8 +9,18 @@ interface OutfitCardProps {
 }
 
 const OutfitCard: React.FC<OutfitCardProps> = ({ suggestion, wardrobeItems }) => {
-  console.log(suggestion);
-  const outfitItems = suggestion.outfit.items
+  console.log('suggestion:', suggestion);
+  
+  // Handle both array and object formats for items
+  let itemIds: string[] = [];
+  if (Array.isArray(suggestion.outfit.items)) {
+    itemIds = suggestion.outfit.items;
+  } else if (typeof suggestion.outfit.items === 'object' && suggestion.outfit.items !== null) {
+    // If items is an object like {top: "item_id", bottoms: "item_id"}, extract the values
+    itemIds = Object.values(suggestion.outfit.items).filter(id => typeof id === 'string');
+  }
+  
+  const outfitItems = itemIds
     .map(itemId => wardrobeItems.find(item => item.id === itemId))
     .filter(Boolean) as WardrobeItem[];
 
