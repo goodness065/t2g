@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, ChangeEvent, FormEvent } from "react";
-import { Loader2, Shield, AlertTriangle, CheckCircle } from "lucide-react";
+import { Loader2, Shield, AlertTriangle, CheckCircle, Link, ArrowLeft } from "lucide-react";
 
 interface FormData {
   amount: string;
@@ -9,6 +9,14 @@ interface FormData {
   online: string;
   timeofday: string;
   device: string;
+}
+
+interface ProcessedFormData {
+  amount: number;
+  international: number;
+  online: number;
+  timeofday: number;
+  device: number;
 }
 
 interface Prediction {
@@ -62,7 +70,6 @@ export default function FraudDetectionForm() {
     // Determine fraud risk based on form inputs
     const isHighRisk = international === 1 && timeofday === 2 && device === 0; // International + Night + Desktop
     const isMediumRisk = international === 1 || timeofday === 2 || (online === 1 && amount > 500);
-    const isLowRisk = international === 0 && timeofday === 0 && online === 0 && amount < 500;
 
     let base: number[] = [];
 
@@ -167,7 +174,7 @@ export default function FraudDetectionForm() {
     return base;
   };
 
-  const callVertexAIPredict = async (pcaVector: number[], formData: any): Promise<Prediction> => {
+  const callVertexAIPredict = async (pcaVector: number[], formData: ProcessedFormData): Promise<Prediction> => {
     try {
       const res = await fetch("/api/fraud-detection", {
         method: "POST",
@@ -222,7 +229,18 @@ export default function FraudDetectionForm() {
   };
 
   return (
+    <div>
+      <Link href="/" className="group flex items-center space-x-3 text-gray-600 hover:text-blue-600 transition-colors">
+                <div className="p-2 bg-gray-100 group-hover:bg-blue-100 rounded-xl transition-colors">
+                  <ArrowLeft className="h-5 w-5" />
+                </div>
+                <span className="font-medium">Back</span>
+              </Link>
+
+    
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
+      
+              
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-lg">
         <h1 className="text-2xl font-bold mb-6 text-center">🛡️ Fraud Detection Demo</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -374,6 +392,7 @@ export default function FraudDetectionForm() {
           </div>
         ) : null}
       </div>
+    </div>
     </div>
   );
 }

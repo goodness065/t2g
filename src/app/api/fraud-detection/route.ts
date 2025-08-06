@@ -28,13 +28,6 @@ interface FraudInstance {
   [key: string]: number;
 }
 
-interface FormData {
-  amount: number;
-  international: number;
-  online: number;
-  timeofday: number;
-  device: number;
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -135,17 +128,17 @@ export async function POST(request: NextRequest) {
     console.error("Prediction error:", error);
 
     let message = "Unknown error";
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "response" in error &&
-      typeof (error as any).response === "object" &&
-      (error as any).response !== null &&
-      "data" in (error as any).response
-    ) {
-      message = JSON.stringify((error as any).response.data);
-    } else if (error instanceof Error) {
+    if (error instanceof Error) {
       message = error.message;
+    } else if (typeof error === "object" && error !== null) {
+      try {
+        const errorObj = error as { response?: { data?: unknown } };
+        if (errorObj.response?.data) {
+          message = JSON.stringify(errorObj.response.data);
+        }
+      } catch {
+        // Fallback to default message
+      }
     }
 
     return NextResponse.json(
