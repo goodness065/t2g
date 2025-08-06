@@ -375,7 +375,7 @@ class GeminiService {
           }
         }
         
-        Ensure each outfit is complete and work-appropriate, with good color coordination and style consistency.
+        Ensure each outfit is complete and work-appropriate, with good color coordination and style consistency. Be conscious of the weather and the ${workStyle} work environment. also be conscious of the category and subcategory of the items so you can create a perfect combination. For example do not combine a category bottoms and a category dresses. it can not work because trouser and dresses can not be combined.
       `;
   
       const result = await this.model.generateContent(prompt);
