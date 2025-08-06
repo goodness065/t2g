@@ -237,24 +237,24 @@ const DetailsModal: React.FC<{ item: WardrobeItem; onClose: () => void }> = ({ i
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="font-semibold text-gray-700">Category:</span>
-                    <p className="capitalize">{item.category}</p>
+                    <p className="capitalize">{item?.category}</p>
                   </div>
                   <div>
                     <span className="font-semibold text-gray-700">Subcategory:</span>
-                    <p className="capitalize">{item.subcategory}</p>
+                    <p className="capitalize">{item?.subcategory}</p>
                   </div>
                   <div>
                     <span className="font-semibold text-gray-700">Material:</span>
-                    <p className="capitalize">{item.material}</p>
+                    <p className="capitalize">{item?.material}</p>
                   </div>
                   <div>
                     <span className="font-semibold text-gray-700">Fit:</span>
-                    <p className="capitalize">{item.fit}</p>
+                    <p className="capitalize">{item?.fit}</p>
                   </div>
                   {item.brand && (
                     <div className="col-span-2">
                       <span className="font-semibold text-gray-700">Brand:</span>
-                      <p>{item.brand}</p>
+                      <p>{item?.brand}</p>
                     </div>
                   )}
                 </div>
@@ -267,7 +267,7 @@ const DetailsModal: React.FC<{ item: WardrobeItem; onClose: () => void }> = ({ i
                   <span>Colors</span>
                 </h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {item.colors.map((color, index) => (
+                  {item?.colors?.map((color, index) => (
                     <div key={index} className="flex items-center space-x-3 bg-white/80 rounded-xl p-3">
                       <div
                         className="w-6 h-6 rounded-full border-2 border-white shadow-md"
@@ -285,7 +285,7 @@ const DetailsModal: React.FC<{ item: WardrobeItem; onClose: () => void }> = ({ i
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-3">Style Tags</h4>
                   <div className="flex flex-wrap gap-2">
-                    {item.style.map((style, index) => (
+                    {item?.style?.map((style, index) => (
                       <span key={index} className="px-3 py-1.5 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 rounded-xl text-sm font-medium border border-purple-200">
                         {style}
                       </span>
@@ -297,7 +297,7 @@ const DetailsModal: React.FC<{ item: WardrobeItem; onClose: () => void }> = ({ i
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-3">Occasions</h4>
                   <div className="flex flex-wrap gap-2">
-                    {item.occasion.map((occasion, index) => (
+                    {item?.occasion?.map((occasion, index) => (
                       <span key={index} className="px-3 py-1.5 bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 rounded-xl text-sm font-medium border border-green-200">
                         {occasion}
                       </span>
@@ -309,7 +309,7 @@ const DetailsModal: React.FC<{ item: WardrobeItem; onClose: () => void }> = ({ i
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-3">Seasons</h4>
                   <div className="flex flex-wrap gap-2">
-                    {item.season.map((season, index) => (
+                    {item?.season?.map((season, index) => (
                       <span key={index} className="px-3 py-1.5 bg-gradient-to-r from-orange-100 to-yellow-100 text-orange-700 rounded-xl text-sm font-medium border border-orange-200">
                         {season}
                       </span>
@@ -327,27 +327,27 @@ const DetailsModal: React.FC<{ item: WardrobeItem; onClose: () => void }> = ({ i
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="font-semibold text-gray-700">Times worn:</span>
-                    <span className="text-emerald-700 font-bold">{item.timesWorn}</span>
+                    <span className="text-emerald-700 font-bold">{item?.timesWorn}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold text-gray-700">Added to wardrobe:</span>
-                    <span className="text-gray-600">{item.dateAdded.toLocaleDateString()}</span>
+                    <span className="text-gray-600">{item?.dateAdded?.toLocaleDateString()}</span>
                   </div>
-                  {item.lastWorn && (
+                  {item?.lastWorn && (
                     <div className="flex justify-between">
                       <span className="font-semibold text-gray-700">Last worn:</span>
-                      <span className="text-gray-600">{item.lastWorn.toLocaleDateString()}</span>
+                      <span className="text-gray-600">{item?.lastWorn?.toLocaleDateString()}</span>
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Tags */}
-              {item.tags.length > 0 && (
+              {item?.tags?.length > 0 && (
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-3">Additional Tags</h4>
                   <div className="flex flex-wrap gap-2">
-                    {item.tags.map((tag, index) => (
+                    {item?.tags?.map((tag, index) => (
                       <span key={index} className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-xl text-sm font-medium border border-gray-200">
                         {tag}
                       </span>
