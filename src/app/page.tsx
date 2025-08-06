@@ -11,11 +11,19 @@ import {
   ArrowRight,
   Star,
   Zap,
-  Shield
+  Shield,
 } from 'lucide-react';
 
 export default function Dashboard() {
   const features = [
+    {
+      title: "Fraud Detection",
+      description: "Custom trained AI models for fraud detection",
+      icon: Shield,
+      href: "/fraud",
+      color: "bg-purple-500 hover:bg-purple-600",
+      gradient: "from-purple-500 to-purple-600"
+    },
     {
       title: "Fast Analyser",
       description: "AI-powered image and text analysis with instant insights",
